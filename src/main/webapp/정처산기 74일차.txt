@@ -1,0 +1,76 @@
+++자바 비밀번호 정규식 패턴 ==> 웹 브라우져 검색
+
+
+++Servlet에서는 DataSource(DBCP)를 만나볼 껀데 나중에 HikariDB / Mabatis / JPA 등등을 만나게 될것이다.  DBCP는 예를 들어 Connection을 10개로 한정하고 누군가 DB에 접속을 한다면 Connection를 하나 주고 그리고 일정시간동안 사용하지 않는다면 다시 가져오고 이런식의 방식임. 접속 수가 많으면 많을 수록 1000개면 1000개 10000개면 10000개의 Connection을 줘야하고 이렇게 되어버리면 서버의 부담이 너무 커짐. 클라이언트가 실질적으로 사용하다보면은 DB를 쓰다가 안쓰는 경우가 생김. 이럴 때 다시 가져와서 다른 클라이언트한테 배분하는 방식이 DBCP임.
+==> DBCP 사용 이유는 시스템에 접근하는 사용자가 많아 서버에 부하가 생기는 경우, 시스템의 상황에 따라 성능 이슈가 발생할 확률이 높고 구축한 시스템에 대해 최적화를 해야하는 상황이 발생하게 되는데 보통 성능 최적화를 위해 테스트하고 확인하는 것 중에 하나가 DB Connetion Pool과 Thread 개수를 설정을 조절하는 것이다.
+==> DataBase Connection Pool의 약자 , 데이터베이스와 어플리케이션을 효율적으로 연결하는 커넥션 풀 라이브러리
+
+
+++ PDF 파일에 DBCP관련 Jar Files 모두 다운 후 WEB-INF안의 lib 파일에 기본 jar만 이동
+++ mysql.community download 웹브라우져 검색 - 상단 MySQL Community Downloads 들어가서 Connector/J 들어가서 Select Operating System : Platform Independent 선택 - 두번째꺼 다운로드 - zip 파일 압축 해제하고 jar 파일을 lib폴더에 드래그해서 넣어주기
+
+++ Tomcat Server.xml 파일 수정
+
+아래 코드는 클라우드의 11서버 프로그램 구현 안에 DataSources 관련 정보 정리 되어있는 곳에 코드가 있는데 Oracle기준으로 되어있는걸 우리는 Mysql형태로 바꾼거임.
+
+@ GlobalNamingResources안에 
+
+<Resource driverClassName="com.mysql.cj.jdbc.Driver"
+              url="jdbc:mysql://localhost/shopdb"
+              username="root"
+              password="1234"
+              name="jdbc/mysql"
+              type="javax.sql.DataSource"
+              maxActive="10"
+              maxIdle="8"
+              maxWait="3000" />
+
+이거 추가해주기
+
+@ Tomcat에 Context.xml 은
+PageContext랑 유사함 ==> 페이지가 이동될때마다 Context에 있는 내용들이 자동으로 로딩됨
+
+Context.xml 안에 </Context> 바로 위에
+
+    <ResourceLink
+    global="jdbc/mysql"
+    name="jdbc/mysql"
+    type="javax.sql.DataSource"     />
+
+추가해주기
+
+==>ResourceLink 서버에서 지정해놓은 Resource를 연결시키는 것
+
+@ web.xml에 
+
+  <!-- DataSource Setting -->
+ <resource-ref>
+    <res-ref-name>jdbc/mysql</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
+
+추가해주기
+
+
+이후에 mysql workbench 들어가서 shopdb만 만들어두기
+
+@ InitialContext ic= new InitialContext();
+==> Searching 객체를 만들어주고
+DataSource ds = (DataSource) ic.lookup("java:comp/env/jdbc/myoracle");
+==> Searching 객체를 통해서 아까 설정한 자원에서 찾아 데이터값을 찾는것, 왼쪽에 있는 DataSource로 형변환을 통해 객체에 담아주는 과정
+
+--> https://opentutorials.org/module/3569/21223 이 사이트 들어가서 설명 읽어보기
++myoracle이 아니라 mysql로 바꿔줘야함
+
+
+
+
+
+
+
+
+
+
+
+
