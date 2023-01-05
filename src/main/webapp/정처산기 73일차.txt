@@ -1,0 +1,47 @@
+Server 설정에 경로 / 이거로 안두고 /01Servlet이런식으로 둘꺼임. 여러 프로젝트를 한 프로젝트에 묶어서? 사용하기 위해?
+
+프로젝트 우클릭 - java EE tool - generate ~ 클릭해서 web.xml을 만들어주기, 필요함(xml파일은 설정값들을 저장하기 위함임.)
+
+alt + shift + s ==> HttpServlet(service), GenericServlet(destroy(), init()) 클릭하고 ok
+
+
+
+++ @ 애노테이션이라는 형태로 톰캣 서버에 알려주는거임.(Mapping된 URL?)
+
+			### CH01 - C03Servlet ###
+보통 jsp 파일들을 WEB-INF 안에다가 숨겨놓음 접근하지 말라고, 근데 getRequestDispatcher로 접근할 수 있게 한거고.
+보완성을 높이기 위함이 맞음.
+
+
+			### 02MVC2 PJ - web.xml ###
+  <!-- FrontController Mapping -->
+  <servlet>
+  	<servlet-name>FC</servlet-name>
+  	<servlet-class>com.test.controller.FronController</servlet-class>
+  </servlet>
+
+==> FronController의 경로를 입력하고 그 서블릿의 이름을 FC로 잡은것
+
+
+  <servlet-mapping>
+  	<servlet-name>FC</servlet-name>
+  	<url-pattern>*.do</url-pattern>
+  </servlet-mapping>
+
+==>*모든 파일의 확장자명이 .do로 끝난다면 FC로 보내겠다는 의미
+
+
+
+WEB-INF에 파일들을 넣어두면 숨겨짐.
+==> main.do나, list.do, main.do 와 같은 Mapping된 URL로만 접근이 가능함.
+
+GET방식이냐 POST방식이냐는 Controller에서 처리해야함.
+
+++getParameterMap()은 join.jsp의 input 태그의 Name들을 키로 받고 입력한 내용을 문자 배열로 받아서 값들을 다 받아옴.
+
+++req.setAttribute("msg", msg);
+==> "msg"라는 키와 msg라는 값으로 세팅이 되어 전달됨. join.jsp에서 확인할 수 있음.
+
+
+
+

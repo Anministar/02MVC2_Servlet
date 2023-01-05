@@ -7,6 +7,8 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.test.dao.MemberDao;
+
 public class MemberJoinController implements SubController {
 
 	private static String msg;
@@ -36,14 +38,15 @@ public class MemberJoinController implements SubController {
 			if (!isvalid) {
 				// 유효성 체크 오류 발생시 전달할 메시지 + 이동될 경로
 
-				req.setAttribute("msg", msg); // msg를 담아주고
+				req.setAttribute("msg", msg) ; // msg를 담아주고
 				req.getRequestDispatcher("/WEB-INF/view/member/join.jsp").forward(req, resp); // 다시 join.jsp로 넘어가는것임.
 				return;
 			}
 			
 			// 3 Service
 			
-			
+			MemberDao dao = MemberDao.getInstance();
+			dao.Insert(null);
 
 			// 4 View(로그인페이지로 이동)
 			

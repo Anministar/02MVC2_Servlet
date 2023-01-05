@@ -47,8 +47,11 @@ public class MemberDao {
 		try {
 			conn = ds.getConnection();
 			System.out.println("[DAO] CONN : " + conn); 
+			
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			
 		}
 		
 		
