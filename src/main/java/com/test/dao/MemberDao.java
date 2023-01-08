@@ -27,7 +27,7 @@ public class MemberDao {
 			InitialContext ic= new InitialContext();
 			//2. DataSource 자원 찾기
 			ds = (DataSource) ic.lookup("java:comp/env/jdbc/mysql");
-			
+			//										  ㅁ
 			System.out.println("[DAO] DS : " + ds);
 			
 			
@@ -38,24 +38,34 @@ public class MemberDao {
 		
 		
 	}
-	//싱글톤패턴
 	
 	//INSERT
-	public boolean Insert(MemberDto dto) {
+	public int Insert(MemberDto dto) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
+		int result = 0;
+		
 		try {
 			conn = ds.getConnection();
-			System.out.println("[DAO] CONN : " + conn); 
+//			System.out.println("[DAO] CONN : " + conn);
+			pstmt = conn.prepareStatement("insert into tbl_member values(?,?,?,?,?,?,?)");
+			pstmt.setString(1, dto.getEmail());
+			pstmt.setString(2, dto.getPwd());
+			pstmt.setString(3, dto.getPhone());
+			pstmt.setString(4, dto.getZipcode());
+			pstmt.setString(5, dto.getAddr1());
+			pstmt.setString(6, dto.getAddr2());
+			pstmt.setString(7, "0");	//Grade
+			
+			result = pstmt.executeUpdate();
+			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			
+			try {pstmt.close();}catch(Exception e) {}
+			try {conn.close();}catch(Exception e) {}
 		}
-		
-		
-		
-		return false;
+		return result;
 	}
 }

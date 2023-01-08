@@ -1,5 +1,6 @@
 package com.test.controller;
 
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,15 +8,18 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.test.dao.MemberDao;
+import com.test.dto.MemberDto;
+import com.test.service.MemberService;
 
 public class MemberJoinController implements SubController {
 
 	private static String msg;
+	
+	private MemberService service = MemberService.getInstance();
 
 	@Override
 	public void execute(HttpServletRequest req, HttpServletResponse resp) {
-		// System.out.println("[MJC] Start-");
+//		 System.out.println("[MJC] Start-");
 
 		try {
 			// 0 Get 구별
@@ -37,18 +41,49 @@ public class MemberJoinController implements SubController {
 			boolean isvalid = isValid(params);
 			if (!isvalid) {
 				// 유효성 체크 오류 발생시 전달할 메시지 + 이동될 경로
-
-				req.setAttribute("msg", msg) ; // msg를 담아주고
+				req.setAttribute("msg", msg); // msg를 담아주고
 				req.getRequestDispatcher("/WEB-INF/view/member/join.jsp").forward(req, resp); // 다시 join.jsp로 넘어가는것임.
-				return;
+				return ;
 			}
 			
-			// 3 Service
 			
-			MemberDao dao = MemberDao.getInstance();
-			dao.Insert(null);
+			// 3 Service
+//			MemberDao dao = MemberDao.getInstance();
+//			dao.Insert(null);
+			
+			
+			MemberDto dto = new MemberDto();
+			// MemberJoinController에서 파라미터 값들을 받아와서 Service로 넘기는 과정
+			dto.setEmail(params.get("email")[0]);
+			dto.setPwd(params.get("pwd")[0]);
+			dto.setPhone(params.get("phone")[0]);
+			dto.setZipcode(params.get("zipcode")[0]);
+			dto.setAddr1(params.get("addr1")[0]);
+			dto.setAddr2(params.get("addr2")[0]);
+			// Service로 넘겨서 Service에서 암호화를 거치는 과정
+			boolean result = service.memberJoin(dto);
+			
 
 			// 4 View(로그인페이지로 이동)
+			
+			if(result) {
+				// 로그인 페이지로 이동
+				msg = URLEncoder.encode("회원가입 성공하셨습니다.");
+				
+				req.setAttribute("msg", msg);
+				// Redirect 방식으로 해야 URI가 바뀜. req에 담겨있는 내용을 비우는 과정에서 msg를 전달함으로써 req에 담겨있는 내용을 비움.
+				String path = req.getContextPath();
+				resp.sendRedirect(path + "/auth/login.do?msg=" + msg);
+				
+				return ;
+				
+			} else {
+				//회원가입 페이지로 이동
+				msg = "회원가입 양식에 맞게 다시 입력하세요.";
+				req.setAttribute("msg", msg);
+				req.getRequestDispatcher("/WEB-INF/view/member/join.jsp").forward(req, resp);
+				return ;
+			}
 			
 			
 
@@ -80,9 +115,8 @@ public class MemberJoinController implements SubController {
 			
 			
 		}
-
-		
-		return false;
+		return true;
+		// isValid 유효성 검사에서 예외가 발생하지 않았는데 false값을 return해서 MemberDao 객체를 만들어서 Insert메서드 동작 확인을 못했음(Console에 아무것도 안뜸.)
 	}
 
 }
