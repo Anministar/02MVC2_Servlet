@@ -79,7 +79,7 @@ public class MemberJoinController implements SubController {
 				
 			} else {
 				//회원가입 페이지로 이동
-				msg = "회원가입 양식에 맞게 다시 입력하세요.";
+				msg="<i class='bi bi-exclamation-triangle' style='color:orange'></i><span>회원가입 양식에 맞게 다시 입력하세요.</span>";
 				req.setAttribute("msg", msg);
 				req.getRequestDispatcher("/WEB-INF/view/member/join.jsp").forward(req, resp);
 				return ;
@@ -101,6 +101,7 @@ public class MemberJoinController implements SubController {
 				msg = "<i class='bi bi-exclamation-triangle' style='color : orange'></i> <span>공백은 포함할 수 없습니다. </span>";
 				return false;
 			}
+			//패스워드 복잡성 체크
 			if(name.equals("pwd")) {
 				String pwvalue = params.get(name)[0];	//입력된 패스워드 값 가져오기
 				 // 비밀번호 포맷 확인(영문, 특수문자, 숫자 포함 8자 이상)
@@ -117,6 +118,7 @@ public class MemberJoinController implements SubController {
 		}
 		return true;
 		// isValid 유효성 검사에서 예외가 발생하지 않았는데 false값을 return해서 MemberDao 객체를 만들어서 Insert메서드 동작 확인을 못했음(Console에 아무것도 안뜸.)
+		// false, false, true 패턴 이런거 조금 알고 있으면 나중에 Spring할 때 도움이 됨. Spring에서는 이런 패턴을 많이 사용.
 	}
 
 }

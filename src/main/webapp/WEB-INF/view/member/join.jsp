@@ -47,10 +47,17 @@
 	<input type="text" name="email" placeholder="example@example.com" class="form-control"/>
 	<input type="text" name="pwd" placeholder="Insert Password" class="form-control" />
 	<input type="text" name="phone" placeholder="0xx-xxxx-xxxx" class="form-control" />
-	<input type="text" name="zipcode" placeholder="우편번호를 입력하세요" class="form-control" />
+	<div class="row" style="margin-bottom:0px;">
+			<div class="col-8">
+				<input type="text" name="zipcode"  placeholder="우편번호를 입력하세요" class="form-control" />
+			</div>
+			<div class="col" style="text-align:right">
+				<button class="btn btn-secondary">우편번호 검색</button>	
+			</div>	
+		</div>
 	<input type="text" name="addr1" placeholder="기본주소 입력" class="form-control" />
 	<input type="text" name="addr2" placeholder="상세주소 입력" class="form-control" />
-	<button class="btn btn-secondary" onclick="isValid()">회원가입</button>
+	<button class="btn btn-secondary" onclick="isValid()">회원가입</button>	
 	<input type="reset" value="초기화" class="btn btn-danger" />
 </form>
 </section>

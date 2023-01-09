@@ -2,6 +2,7 @@ package com.test.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
@@ -27,7 +28,7 @@ public class MemberDao {
 			InitialContext ic= new InitialContext();
 			//2. DataSource 자원 찾기
 			ds = (DataSource) ic.lookup("java:comp/env/jdbc/mysql");
-			//										  ㅁ
+			//								여기까지 고정값↑
 			System.out.println("[DAO] DS : " + ds);
 			
 			
@@ -68,4 +69,41 @@ public class MemberDao {
 		}
 		return result;
 	}
+	
+	//SELECT
+	public MemberDto Select(String email) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		MemberDto dto = null;
+
+		try {
+			conn = ds.getConnection();
+			pstmt = conn.prepareStatement("select * from tbl_member where email=?");
+			pstmt.setString(1, email);
+			rs = pstmt.executeQuery();
+			if(rs != null) {
+				rs.next();
+				dto = new MemberDto();
+				dto.setEmail(rs.getString(1));
+				dto.setPwd(rs.getString(2));
+				dto.setPhone(rs.getString(3));
+				dto.setZipcode(rs.getString(4));
+				dto.setAddr1(rs.getString(5));
+				dto.setAddr2(rs.getString(6));
+				dto.setGrade(rs.getString(7));
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {rs.close();}catch(Exception e) {}
+			try {pstmt.close();}catch(Exception e) {}
+			try {conn.close();}catch(Exception e) {}
+		}
+		
+		return dto;
+	}
+	
+	
 }
