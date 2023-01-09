@@ -1,2 +1,41 @@
 ++ 카카오 로그인 웹 브라우져에 검색해서 zip으로 다운로드
 ++ default 정적리소스 처리
+
+		request
+클라이언트 --------(Filter처리)--------> Server
+		| Fi    	             request 내장객체
+		| lt (필터)                ↓
+		| er       	               ↓
+	<-------(Filter처리)---------- response 내장객체
+		response
+@ Filter
+어떤 요청이 있을 때 요청을 받기 전에 전에 수행하는 작업.
+response로 보내기 전에 처리할 작업을 처리할 수 있음
+++ 필터는 여러개의 필터가 모여 하나의 필터 체인을 형성할 수 있음.
+
+@ Dynamic web project 03Filter 만들어서 server에 add and remove에서 추가 finish
+
+새로 jsp파일을 만들어서
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%> 중에
+<%@ 이 부분에 에러가 나는건 Build Path에 server runtime이 추가가 안되어있어서 그럼.
+
+++ Intercepter ==> FrontController와 SubController사이
+
+
+
+<!-- Filter -->
+  <filter>
+  	<filter-name>ForwardLogin</filter-name>
+  	<filter-class>com.test.filter.forwardloginpageFilter</filter-class>
+  </filter>
+  
+  <filter-mapping>
+  	<filter-name>ForwardLogin</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+어떤 URL을 받아서 login.do로 보낼꺼기 때문에 /*을 사용
+여기에서 / 가 의미하는건 default Servlet을 의미함, 미리 만들어져 있는 기본 Servlet.
+
+
